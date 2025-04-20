@@ -1,11 +1,12 @@
 "use client"
 
-import { useEffect, useRef, useState } from "react"
+import { useEffect, useRef, useState, Suspense } from "react" // Import Suspense
 import styles from "./compare.module.css"
 import "../globals.css";
 import Image from "next/image"
 import { useSearchParams } from "next/navigation"
 
+// Your original Compare component
 const Compare = () => {
   const [originalImage, setOriginalImage] = useState<string | null>(null)
   const [enhancedImage, setEnhancedImage] = useState<string | null>(null)
@@ -18,6 +19,7 @@ const Compare = () => {
   const isClicked = useRef<boolean>(false)
   const mPos = useRef<{ x: number; y: number }>({ x: 0, y: 0 })
 
+  // useSearchParams is used here
   const searchParams = useSearchParams()
 
   // Get image URLs directly from URL parameters
@@ -117,4 +119,12 @@ const Compare = () => {
   )
 }
 
-export default Compare
+// Export a wrapper component that includes Suspense
+export default function ComparePageWithSuspense() {
+  return (
+    // Wrap the Compare component with Suspense
+    <Suspense fallback={<div>Loading...</div>}> {/* Provide a fallback UI */}
+      <Compare />
+    </Suspense>
+  );
+}
