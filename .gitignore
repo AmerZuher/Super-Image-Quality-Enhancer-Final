@@ -1,0 +1,27 @@
+# Python
+__pycache__/
+*.py[cod]
+*.h5
+
+# Conda
+.env/
+.conda/
+*.lock
+
+# Node
+node_modules/
+.next/
+out/
+
+# OS
+.DS_Store
+
+# Logs
+*.log
+
+# Environment files
+.env
+*.sqlite3
+
+# Docker
+*.tar
