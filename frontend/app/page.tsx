@@ -60,7 +60,7 @@ const ImageEnhancerUI = () => {
     formData.append("file", file);
 
     try {
-      const response = await fetch("http://localhost:8000/upload/", { // Ensure this URL is correct
+      const response = await fetch("http://localhost:8000/upload/", { // Use the backend service name
         method: "POST",
         body: formData,
       });
@@ -71,7 +71,8 @@ const ImageEnhancerUI = () => {
 
       const data = await response.json();
       setImageId(data.id);
-      setOriginalImageUrl(`http://localhost:8000${data.original_url}`); // Assuming the backend returns the original URL like this
+      // Construct the full URL for the original image using the backend service name
+      setOriginalImageUrl(`http://localhost:8000${data.original_url}`);
     } catch (error) {
       console.error("Error uploading image:", error);
       alert(`Failed to upload image. ${error instanceof Error ? error.message : String(error)}`);
@@ -92,7 +93,7 @@ const ImageEnhancerUI = () => {
     const startTime = performance.now();
 
     try {
-      const response = await fetch(`http://localhost:8000/enhance/${imageId}`, { // Ensure this URL is correct
+      const response = await fetch(`http://localhost:8000/enhance/${imageId}`, { // Use the backend service name
         method: "POST",
       });
 
@@ -102,6 +103,7 @@ const ImageEnhancerUI = () => {
 
       const data = await response.json();
       const endTime = performance.now();
+      // Construct the full URL for the enhanced image using the backend service name
       setEnhancedImage(`http://localhost:8000${data.enhanced_url}`);
       setProcessingTime(Math.round((endTime - startTime) / 1000)); // Calculate rough processing time client-side
     } catch (error) {
@@ -115,6 +117,7 @@ const ImageEnhancerUI = () => {
 
   const handleCompareClick = () => {
     if (originalImageUrl && enhancedImage) {
+      // This is where the data is correctly passed to the compare page via URL params
       router.push(`/compare?originalUrl=${encodeURIComponent(originalImageUrl)}&enhancedUrl=${encodeURIComponent(enhancedImage)}`);
     } else {
       alert("Please upload and enhance an image before comparing.");
@@ -140,7 +143,7 @@ const ImageEnhancerUI = () => {
 
     try {
       setIsLoading(true); // Show loading state during download fetch
-      const response = await fetch(enhancedImage);
+      const response = await fetch(enhancedImage); // Fetch the image from the backend
       if (!response.ok) {
         throw new Error(`Failed to fetch enhanced image: ${response.statusText}`)
       }
@@ -149,7 +152,7 @@ const ImageEnhancerUI = () => {
       const link = document.createElement("a");
       link.href = URL.createObjectURL(blob);
       const baseName = fileName.includes('.') ? fileName.substring(0, fileName.lastIndexOf('.')) : fileName;
-      const extension = fileName.includes('.') ? fileName.substring(fileName.lastIndexOf('.')) : '.png';
+      const extension = fileName.includes('.') ? fileName.substring(fileName.lastIndexOf('.')) : '.png'; // Assuming enhanced is png
       link.download = `enhanced_${baseName}${extension}`;
       document.body.appendChild(link);
       link.click();
@@ -168,32 +171,22 @@ const ImageEnhancerUI = () => {
       alert("Please select an image first.");
       return;
     }
+    // If file is selected but not uploaded (no imageId yet), upload it
     if (!imageId) {
       handleUpload();
-    } else if (!enhancedImage) {
+    }
+    // If file is uploaded (imageId exists) but not enhanced, enhance it
+    else if (!enhancedImage) {
       handleEnhance();
-    } else {
+    }
+    // If already uploaded and enhanced
+    else {
       alert("Image already enhanced. You can compare or download.");
     }
   };
 
-  useEffect(() => {
-    const compareImages = localStorage.getItem("compareImages");
-  
-    if (compareImages) {
-      fetch("http://localhost:8000/compare/", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ compareImages }),
-      })
-        .then((res) => res.json())
-        .then((data) => console.log("Server response:", data))
-        .catch((err) => console.error(err));
-    }
-  }, []);
-  
+  // REMOVED THE PROBLEMATIC useEffect HERE
+
   useEffect(() => {
     let currentPreview = preview;
     return () => {
@@ -261,7 +254,7 @@ const ImageEnhancerUI = () => {
               disabled={isLoading} // Disable when loading
             />
             {/* Label acts as the visible button */}
-            <label htmlFor="file-input" className={`start_button  ${isLoading ? 'button-disabled' : ''}`}>
+            <label htmlFor="file-input" className={`start_button  ${isLoading ? 'button-disabled' : ''}`}>
               Select Image
             </label>
           </div>
