@@ -16,6 +16,11 @@ services:
       - ./backend/images:/app/images
     networks:
       - app-network
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - capabilities: [gpu]
 
   db:
     image: postgres:13
@@ -31,12 +36,15 @@ services:
 
   frontend:
     build:
-      context: ./frontend
+      context: ./frontend # Specifies the directory containing the Dockerfile and code
     container_name: nextjs-frontend
     ports:
       - "3000:3000"
     networks:
       - app-network
+
+    command: npm start
+
 
 volumes:
   db_data:
