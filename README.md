@@ -32,9 +32,9 @@ Make sure you have Docker and Docker Compose installed.
 
 ```bash
 git clone https://github.com/AmerZuher/super-image-enhancer-final.git
-cd super-image-enhancer
 
-# Build and run the containers
+cd Super-Image-Quality-Enhancer-Final
+
 docker-compose up --build
 ```
 
