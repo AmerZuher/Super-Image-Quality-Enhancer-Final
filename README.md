@@ -31,7 +31,7 @@ You can run this project either locally or using Docker.
 Make sure you have Docker and Docker Compose installed.
 
 ```bash
-git clone https://github.com/AmerZuher/super-image-enhancer-final.git
+git clone https://github.com/AmerZuher/Super-Image-Quality-Enhancer-Final.git
 
 cd Super-Image-Quality-Enhancer-Final
 
